@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Attendance System - Roll Numbers 1-72</title>
     <style>
         * {
@@ -12,8 +12,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -23,7 +23,7 @@
             margin: 0 auto;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
         }
 
@@ -87,7 +87,7 @@
         .rolls-grid {
             padding: 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-template-columns: repeat(auto-fill,minmax(80px,1fr));
             gap: 10px;
             max-height: 400px;
             overflow-y: auto;
@@ -133,7 +133,7 @@
             padding: 15px;
             min-height: 60px;
             margin-bottom: 15px;
-            font-family: 'Courier New', monospace;
+            font-family: 'Courier New',monospace;
             color: #2d3748;
             word-break: break-all;
         }
@@ -173,7 +173,7 @@
 
         @media (max-width: 768px) {
             .rolls-grid {
-                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+                grid-template-columns: repeat(auto-fill,minmax(60px,1fr));
             }
             
             .controls {
@@ -252,7 +252,7 @@
             if (selectedRolls.size === 0) {
                 display.textContent = 'No roll numbers selected';
             } else {
-                const sortedRolls = Array.from(selectedRolls).sort((a, b) => a - b);
+                const sortedRolls = Array.from(selectedRolls).sort((a,b) => a - b);
                 display.textContent = sortedRolls.join(',');
             }
         }
@@ -295,7 +295,7 @@
 
         // Select specific roll numbers
         function selectSpecific() {
-            const specificRolls = [1, 2, 16, 21, 23, 24, 30, 36, 40, 45, 51, 53, 54, 67, 8, 39];
+            const specificRolls = [1,2,16,21,23,24,30,36,40,45,51,53,54,67,8,39];
             specificRolls.forEach(rollNumber => {
                 selectedRolls.add(rollNumber);
                 document.getElementById(`roll-${rollNumber}`).classList.add('checked');
@@ -306,37 +306,37 @@
         // Copy to clipboard functionality
         function copyToClipboard() {
             if (selectedRolls.size === 0) {
-                showStatus('No roll numbers to copy!', 'error');
+                showStatus('No roll numbers to copy!','error');
                 return;
             }
 
-            const sortedRolls = Array.from(selectedRolls).sort((a, b) => a - b);
-            const textToCopy = sortedRolls.join(', ');
+            const sortedRolls = Array.from(selectedRolls).sort((a,b) => a - b);
+            const textToCopy = sortedRolls.join(',');
 
             navigator.clipboard.writeText(textToCopy).then(() => {
-                showStatus('Copied to clipboard!', 'success');
+                showStatus('Copied to clipboard!','success');
                 const copyBtn = document.getElementById('copyBtn');
                 copyBtn.classList.add('copied');
                 setTimeout(() => {
                     copyBtn.classList.remove('copied');
-                }, 2000);
+                },2000);
             }).catch(err => {
-                showStatus('Failed to copy: ' + err, 'error');
+                showStatus('Failed to copy: ' + err,'error');
             });
         }
 
         // Show status message
-        function showStatus(message, type) {
+        function showStatus(message,type) {
             const status = document.getElementById('statusMessage');
             status.textContent = message;
             status.className = 'status ' + type;
             setTimeout(() => {
                 status.className = 'status';
-            }, 3000);
+            },3000);
         }
 
         // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded',function() {
             generateRollNumbers();
         });
     </script>
