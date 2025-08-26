@@ -126,6 +126,13 @@
             color: #2d3748;
         }
 
+        .rolls-count {
+            font-size: 1rem;
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
         .rolls-display {
             background: white;
             border: 2px solid #e2e8f0;
@@ -208,9 +215,11 @@
 
         <div class="selected-rolls">
             <h3>Selected Roll Numbers:</h3>
+            <div class="rolls-count" id="rollsCountDisplay">Total Selected: 0/72</div>
             <div class="rolls-display" id="selectedRollsDisplay">No roll numbers selected</div>
             <button class="copy-btn" onclick="copyToClipboard()" id="copyBtn">Copy to Clipboard</button>
             <div class="status" id="statusMessage"></div>
+            <button class="btn btn-success" onclick="sendAttendance()">Send Attendance to WhatsApp</button>
         </div>
     </div>
 
@@ -249,11 +258,15 @@
         // Update the display of selected roll numbers
         function updateSelectedDisplay() {
             const display = document.getElementById('selectedRollsDisplay');
+            const countDisplay = document.getElementById('rollsCountDisplay');
+            
             if (selectedRolls.size === 0) {
                 display.textContent = 'No roll numbers selected';
+                countDisplay.textContent = 'Total Selected: 0/72';
             } else {
                 const sortedRolls = Array.from(selectedRolls).sort((a,b) => a - b);
                 display.textContent = sortedRolls.join(',');
+                countDisplay.textContent = `Total Selected: ${selectedRolls.size}/72`;
             }
         }
 
@@ -301,6 +314,20 @@
                 document.getElementById(`roll-${rollNumber}`).classList.add('checked');
             });
             updateSelectedDisplay();
+        }
+
+        // Send attendance to WhatsApp
+        function sendAttendance() {
+            if (selectedRolls.size === 0) {
+                showStatus('No roll numbers selected to send!','error');
+                return;
+            }
+
+            const sortedRolls = Array.from(selectedRolls).sort((a,b) => a - b);
+            const message = `${sortedRolls.join(',')}`;
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+
+            window.open(whatsappUrl,'_blank');
         }
 
         // Copy to clipboard functionality
