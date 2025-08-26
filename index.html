@@ -51,8 +51,6 @@
             flex-wrap: wrap;
         }
 
-       
-
         .btn {
             padding: 8px 16px;
             border: none;
@@ -94,7 +92,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fill,minmax(80px,1fr));
             gap: 10px;
-            /* max-height: 400px; */ /* Commenting this line */
             overflow-y: auto;
         }
 
@@ -107,7 +104,7 @@
             border: 2px solid #e2e8f0;
             border-radius: 8px;
             transition: all 0.3s ease;
-            cursor: pointer; /* Added cursor pointer */
+            cursor: pointer;
         }
 
         .roll-item:hover {
@@ -125,7 +122,6 @@
             padding: 20px;
             color: white;
             border-top: 1px solid #e2e8f0;
-            
         }
 
         .selected-rolls h3 {
@@ -140,7 +136,6 @@
             font-weight: 500;
         }
         .cen{
-            /* display:flex; */
             justify-content: center;
             align-items: center;
         }
@@ -176,18 +171,31 @@
             background: #38a169;
         }
 
-        .status {
-            margin-top: 10px;
-            padding: 8px;
-            border-radius: 4px;
-            text-align: center;
-            display: none;
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 1000;
         }
 
-        .status.success {
-            background: #c6f6d5;
-            color: #22543d;
-            display: block;
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background: #38a169;
+        }
+
+        .toast.error {
+            background: #e53e3e;
         }
 
         @media (max-width: 768px) {
@@ -199,7 +207,6 @@
                 flex-direction: column;
                 align-items: stretch;
             }
-            
         }
     </style>
 </head>
@@ -226,15 +233,11 @@
             <h3>Selected Roll Numbers:</h3>
             <div class="rolls-count" id="rollsCountDisplay">Total Selected: 0/72</div>
             <div class="rolls-display" id="selectedRollsDisplay">No roll numbers selected</div>
-                <div class="cen" style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
-
+            <div class="cen" style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
                 <button class="copy-btn" onclick="copyToClipboard()" id="copyBtn">Copy to Clipboard</button>
-                <div class="status" id="statusMessage"></div>
                 <br>
                 <br>
-                <button class="btn btn-success" onclick="sendAttendance()" style="background-color: #38a169;     padding-right: 41px;
-    padding-left: 43px;
-    padding-top: 11px;"> WhatsApp</button>
+                <button class="btn btn-success" onclick="sendAttendance()" style="background-color: #38a169; padding-right: 41px; padding-left: 43px; padding-top: 11px;">WhatsApp</button>
             </div>
         </div>
     </div>
@@ -258,7 +261,7 @@
 
                 rollItem.appendChild(label);
                 rollItem.onclick = () => {
-                    rollItem.classList.toggle('checked'); // Toggle selection on roll item click
+                    rollItem.classList.toggle('checked');
                     if (selectedRolls.has(i)) {
                         selectedRolls.delete(i);
                     } else {
@@ -335,7 +338,7 @@
         // Send attendance to WhatsApp
         function sendAttendance() {
             if (selectedRolls.size === 0) {
-                showStatus('No roll numbers selected to send!','error');
+                showToast('No roll numbers selected to send!', 'error');
                 return;
             }
 
@@ -349,7 +352,7 @@
         // Copy to clipboard functionality
         function copyToClipboard() {
             if (selectedRolls.size === 0) {
-                showStatus('No roll numbers to copy!','error');
+                showToast('No roll numbers to copy!', 'error');
                 return;
             }
 
@@ -357,29 +360,43 @@
             const textToCopy = sortedRolls.join(',');
 
             navigator.clipboard.writeText(textToCopy).then(() => {
-                showStatus('Copied to clipboard!','success');
+                showToast('Copied to clipboard!', 'success');
                 const copyBtn = document.getElementById('copyBtn');
                 copyBtn.classList.add('copied');
                 setTimeout(() => {
                     copyBtn.classList.remove('copied');
-                },2000);
+                }, 2000);
             }).catch(err => {
-                showStatus('Failed to copy: ' + err,'error');
+                showToast('Failed to copy: ' + err, 'error');
             });
         }
 
-        // Show status message
-        function showStatus(message,type) {
-            const status = document.getElementById('statusMessage');
-            status.textContent = message;
-            status.className = 'status ' + type;
+        // Show toast notification
+        function showToast(message, type) {
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
             setTimeout(() => {
-                status.className = 'status';
-            },3000);
+                toast.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
         }
 
         // Initialize the application
-        document.addEventListener('DOMContentLoaded',function() {
+        document.addEventListener('DOMContentLoaded', function() {
             generateRollNumbers();
         });
     </script>
