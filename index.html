@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance System - Roll Numbers 1-72</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #4a5568;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            background: #f7fafc;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #4299e1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3182ce;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .rolls-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .roll-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer; /* Added cursor pointer */
+        }
+
+        .roll-item:hover {
+            border-color: #4299e1;
+            transform: translateY(-2px);
+        }
+
+        .roll-item.checked {
+            background: #ebf8ff;
+            border-color: #4299e1;
+        }
+
+        .selected-rolls {
+            background: #f7fafc;
+            padding: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .selected-rolls h3 {
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        .rolls-display {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 60px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            color: #2d3748;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: #48bb78;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #38a169;
+        }
+
+        .copy-btn.copied {
+            background: #38a169;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .rolls-grid {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Attendance System</h1>
+            <p>Roll Numbers 1 to 72</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="selectAll()">Select All</button>
+            <button class="btn btn-danger" onclick="deselectAll()">Deselect All</button>
+            <button class="btn btn-success" onclick="selectEven()">Select Even</button>
+            <button class="btn btn-success" onclick="selectOdd()">Select Odd</button>
+            <button class="btn btn-success" onclick="selectSpecific()">Select Specific Students</button>
+        </div>
+
+        <div class="rolls-grid" id="rollsContainer">
+            <!-- Roll numbers will be generated here -->
+        </div>
+
+        <div class="selected-rolls">
+            <h3>Selected Roll Numbers:</h3>
+            <div class="rolls-display" id="selectedRollsDisplay">No roll numbers selected</div>
+            <button class="copy-btn" onclick="copyToClipboard()" id="copyBtn">Copy to Clipboard</button>
+            <div class="status" id="statusMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        let selectedRolls = new Set();
+        const totalRolls = 72;
+
+        // Generate roll number boxes
+        function generateRollNumbers() {
+            const container = document.getElementById('rollsContainer');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= totalRolls; i++) {
+                const rollItem = document.createElement('div');
+                rollItem.className = 'roll-item';
+                rollItem.id = `roll-${i}`;
+
+                const label = document.createElement('label');
+                label.textContent = i;
+
+                rollItem.appendChild(label);
+                rollItem.onclick = () => {
+                    rollItem.classList.toggle('checked'); // Toggle selection on roll item click
+                    if (selectedRolls.has(i)) {
+                        selectedRolls.delete(i);
+                    } else {
+                        selectedRolls.add(i);
+                    }
+                    updateSelectedDisplay();
+                };
+
+                container.appendChild(rollItem);
+            }
+        }
+
+        // Update the display of selected roll numbers
+        function updateSelectedDisplay() {
+            const display = document.getElementById('selectedRollsDisplay');
+            if (selectedRolls.size === 0) {
+                display.textContent = 'No roll numbers selected';
+            } else {
+                const sortedRolls = Array.from(selectedRolls).sort((a, b) => a - b);
+                display.textContent = sortedRolls.join(',');
+            }
+        }
+
+        // Select all roll numbers
+        function selectAll() {
+            for (let i = 1; i <= totalRolls; i++) {
+                selectedRolls.add(i);
+                document.getElementById(`roll-${i}`).classList.add('checked');
+            }
+            updateSelectedDisplay();
+        }
+
+        // Deselect all roll numbers
+        function deselectAll() {
+            for (let i = 1; i <= totalRolls; i++) {
+                selectedRolls.delete(i);
+                document.getElementById(`roll-${i}`).classList.remove('checked');
+            }
+            updateSelectedDisplay();
+        }
+
+        // Select even roll numbers
+        function selectEven() {
+            for (let i = 2; i <= totalRolls; i += 2) {
+                selectedRolls.add(i);
+                document.getElementById(`roll-${i}`).classList.add('checked');
+            }
+            updateSelectedDisplay();
+        }
+
+        // Select odd roll numbers
+        function selectOdd() {
+            for (let i = 1; i <= totalRolls; i += 2) {
+                selectedRolls.add(i);
+                document.getElementById(`roll-${i}`).classList.add('checked');
+            }
+            updateSelectedDisplay();
+        }
+
+        // Select specific roll numbers
+        function selectSpecific() {
+            const specificRolls = [1, 2, 16, 21, 23, 24, 30, 36, 40, 45, 51, 53, 54, 67, 8, 39];
+            specificRolls.forEach(rollNumber => {
+                selectedRolls.add(rollNumber);
+                document.getElementById(`roll-${rollNumber}`).classList.add('checked');
+            });
+            updateSelectedDisplay();
+        }
+
+        // Copy to clipboard functionality
+        function copyToClipboard() {
+            if (selectedRolls.size === 0) {
+                showStatus('No roll numbers to copy!', 'error');
+                return;
+            }
+
+            const sortedRolls = Array.from(selectedRolls).sort((a, b) => a - b);
+            const textToCopy = sortedRolls.join(', ');
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showStatus('Copied to clipboard!', 'success');
+                const copyBtn = document.getElementById('copyBtn');
+                copyBtn.classList.add('copied');
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                showStatus('Failed to copy: ' + err, 'error');
+            });
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            const status = document.getElementById('statusMessage');
+            status.textContent = message;
+            status.className = 'status ' + type;
+            setTimeout(() => {
+                status.className = 'status';
+            }, 3000);
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            generateRollNumbers();
+        });
+    </script>
+</body>
+</html>
