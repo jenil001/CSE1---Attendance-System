@@ -13,22 +13,24 @@
 
         body {
             font-family: 'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            background: #0d0d0e;
             min-height: 100vh;
             padding: 20px;
+            color:white
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
+            background: rgb(12, 12, 12);
             border-radius: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
+            color: white;
         }
 
         .header {
-            background: #4a5568;
+            background: #0d0d0e;
             color: white;
             padding: 20px;
             text-align: center;
@@ -40,13 +42,16 @@
         }
 
         .controls {
-            background: #f7fafc;
+            background: #0a0a0a;
             padding: 15px 20px;
             border-bottom: 1px solid #e2e8f0;
             display: flex;
+            justify-content: center;
             gap: 10px;
             flex-wrap: wrap;
         }
+
+       
 
         .btn {
             padding: 8px 16px;
@@ -67,7 +72,7 @@
         }
 
         .btn-success {
-            background: #48bb78;
+            background: #878532;
             color: white;
         }
 
@@ -89,7 +94,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill,minmax(80px,1fr));
             gap: 10px;
-            max-height: 400px;
+            /* max-height: 400px; */ /* Commenting this line */
             overflow-y: auto;
         }
 
@@ -111,26 +116,33 @@
         }
 
         .roll-item.checked {
-            background: #ebf8ff;
+            background: #74b87e;
             border-color: #4299e1;
         }
 
         .selected-rolls {
-            background: #f7fafc;
+            background: #0b1013;
             padding: 20px;
+            color: white;
             border-top: 1px solid #e2e8f0;
+            
         }
 
         .selected-rolls h3 {
             margin-bottom: 10px;
-            color: #2d3748;
+            color: #ffffff;
         }
 
         .rolls-count {
             font-size: 1rem;
-            color: #4a5568;
+            color: #ffffff;
             margin-bottom: 10px;
             font-weight: 500;
+        }
+        .cen{
+            /* display:flex; */
+            justify-content: center;
+            align-items: center;
         }
 
         .rolls-display {
@@ -146,7 +158,7 @@
         }
 
         .copy-btn {
-            background: #48bb78;
+            background: #b72822;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -188,9 +200,6 @@
                 align-items: stretch;
             }
             
-            .btn {
-                width: 100%;
-            }
         }
     </style>
 </head>
@@ -206,7 +215,7 @@
             <button class="btn btn-danger" onclick="deselectAll()">Deselect All</button>
             <button class="btn btn-success" onclick="selectEven()">Select Even</button>
             <button class="btn btn-success" onclick="selectOdd()">Select Odd</button>
-            <button class="btn btn-success" onclick="selectSpecific()">Select Specific Students</button>
+            <button class="btn btn-success" onclick="selectSpecific()">Select Impact Students</button>
         </div>
 
         <div class="rolls-grid" id="rollsContainer">
@@ -217,9 +226,16 @@
             <h3>Selected Roll Numbers:</h3>
             <div class="rolls-count" id="rollsCountDisplay">Total Selected: 0/72</div>
             <div class="rolls-display" id="selectedRollsDisplay">No roll numbers selected</div>
-            <button class="copy-btn" onclick="copyToClipboard()" id="copyBtn">Copy to Clipboard</button>
-            <div class="status" id="statusMessage"></div>
-            <button class="btn btn-success" onclick="sendAttendance()">Send Attendance to WhatsApp</button>
+                <div class="cen" style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
+
+                <button class="copy-btn" onclick="copyToClipboard()" id="copyBtn">Copy to Clipboard</button>
+                <div class="status" id="statusMessage"></div>
+                <br>
+                <br>
+                <button class="btn btn-success" onclick="sendAttendance()" style="background-color: #38a169;     padding-right: 41px;
+    padding-left: 43px;
+    padding-top: 11px;"> WhatsApp</button>
+            </div>
         </div>
     </div>
 
