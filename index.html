@@ -644,7 +644,7 @@
                 countDisplay.textContent = 'Total Selected: 0/72';
             } else {
                 const sortedRolls = Array.from(selectedRolls).sort((a,b) => a - b);
-                display.textContent = sortedRolls.join(', ');
+                display.textContent = sortedRolls.join(',');
                 countDisplay.textContent = `Total Selected: ${selectedRolls.size}/72`;
             }
         }
