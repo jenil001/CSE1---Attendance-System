@@ -404,7 +404,7 @@
 <!-- </body>
 </html>
  --> 
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -582,8 +582,6 @@
         <div class="controls">
             <button class="btn btn-primary" onclick="selectAll()">Select All</button>
             <button class="btn btn-danger" onclick="deselectAll()">Deselect All</button>
-            <button class="btn btn-success" onclick="selectEven()">Select Even</button>
-            <button class="btn btn-success" onclick="selectOdd()">Select Odd</button>
             <button class="btn btn-success" onclick="selectSpecific()">Select Impact Students</button>
         </div>
 
@@ -666,26 +664,9 @@
             updateSelectedDisplay();
         }
 
-        function selectEven() {
-            deselectAll();
-            for (let i = 2; i <= totalRolls; i += 2) {
-                selectedRolls.add(i);
-                document.getElementById(`roll-${i}`).classList.add('checked');
-            }
-            updateSelectedDisplay();
-        }
-
-        function selectOdd() {
-            deselectAll();
-            for (let i = 1; i <= totalRolls; i += 2) {
-                selectedRolls.add(i);
-                document.getElementById(`roll-${i}`).classList.add('checked');
-            }
-            updateSelectedDisplay();
-        }
+        
 
         function selectSpecific() {
-            deselectAll();
             impactStudents.forEach(num => {
                 selectedRolls.add(num);
                 document.getElementById(`roll-${num}`).classList.add('checked');
@@ -707,8 +688,6 @@
                 showToast('No valid roll numbers found!', 'error');
                 return;
             }
-
-            deselectAll();
             rolls.forEach(num => {
                 selectedRolls.add(num);
                 document.getElementById(`roll-${num}`).classList.add('checked');
